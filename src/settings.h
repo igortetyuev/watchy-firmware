@@ -31,6 +31,9 @@
 #ifndef GMT_OFFSET_SEC
 #define GMT_OFFSET_SEC 0 //UTC; set in .env (seconds) or change in the watch menu
 #endif
+#ifndef VIBRATE_OCLOCK
+#define VIBRATE_OCLOCK 1 //short buzz every full hour; set VIBRATE_OCLOCK=0 in .env to disable
+#endif
 
 watchySettings settings{
     #ifdef CITY_ID
@@ -47,7 +50,7 @@ watchySettings settings{
     .weatherUpdateInterval = WEATHER_UPDATE_INTERVAL,
     .ntpServer = NTP_SERVER,
     .gmtOffset = GMT_OFFSET_SEC,
-    .vibrateOClock = true,
+    .vibrateOClock = VIBRATE_OCLOCK != 0,
 };
 
 #endif

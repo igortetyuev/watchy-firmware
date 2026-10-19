@@ -32,6 +32,7 @@ OPENWEATHERMAP_APIKEY=
 CITY_ID=5128581
 TEMP_UNIT=metric
 TEMP_LANG=en
+VIBRATE_OCLOCK=1
 ```
 
 ### UI language (`LANG`)
@@ -91,6 +92,11 @@ Leaving `WIFI_SSID` empty is fine — just add networks through the AP later.
 Used by the digital face. Without an API key the face shows the on-board
 temperature sensor instead. `CITY_ID` is an OpenWeatherMap city id,
 `TEMP_UNIT` is `metric` or `imperial`.
+
+### Hourly vibration (`VIBRATE_OCLOCK`)
+
+`1` (default) makes the watch buzz briefly at every full hour, `0` turns it
+off. Build-time only; there is no menu item for it.
 
 ## Alarm
 

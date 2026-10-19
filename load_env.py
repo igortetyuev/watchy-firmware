@@ -5,7 +5,7 @@ Import("env")
 
 STRING_KEYS = {"WIFI_SSID", "WIFI_PASSWD", "OPENWEATHERMAP_APIKEY",
                "CITY_ID", "TEMP_LANG", "TEMP_UNIT"}
-INT_KEYS = {"GMT_OFFSET_SEC"}
+INT_KEYS = {"GMT_OFFSET_SEC", "VIBRATE_OCLOCK"}
 
 path = os.path.join(env.subst("$PROJECT_DIR"), ".env")
 if os.path.isfile(path):
