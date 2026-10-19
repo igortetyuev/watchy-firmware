@@ -93,10 +93,19 @@ pio device monitor -b 115200                                   # or pyserial, ~1
   the opening MENU press to be released** before polling, otherwise it is read
   again as "select/save" on the first iteration. Pattern: `setTimezone`,
   `showWifiList`, `showFaces`. Wait‑for‑press, then wait‑for‑release per button.
-- **Cyrillic text:** `Cyrillic9pt7b` stores А‑я/Ёё at single‑byte codes 0x80–0xC1.
-  Print Russian only via `printRU` / `printlnRU` (UTF‑8 → byte map);
-  `display.print("Привет")` prints garbage. ASCII/digits pass through, so the same
-  font is fine for numbers (`UTC+02:00`, dates).
+- **i18n:** UI strings live in `lib/Watchy/lang/*.json` (`en.json` is the key
+  reference and defines order); `lib/Watchy/tools/gen_lang.py` (pre-script)
+  reads `LANG` from `.env` and writes `include/lang_strings.h`
+  (`S_<KEY>` enum + `STR[]`), only when content changes. Build fails if a
+  language's keys don't match `en`. Print strings via `printL`/`printlnL`
+  (accept `StrId` or `const char*`), font via `LANG_FONT`. Charset per
+  language via `_charset`: `cyrillic` → `Cyrillic9pt7b` (custom byte map
+  0x80–0xC1), `latin1` → `Latin9pt7b` (ISO‑8859‑1, FreeSans 9pt). A language
+  needing other glyphs needs a new font + a branch in `langCpToByte`.
+  A 9 pt line fits ≈18–20 chars on 200 px — keep translations short.
+  `wday_*`/`month_*` must stay consecutive (`S_WDAY_1 + wday - 1`).
+  `display.print("Привет")`-style direct non-ASCII output prints garbage —
+  always go through `printL`.
 - **Timezone:** `gmtOffset` is user‑set (menu «Часовой пояс», NVS) and must not be
   overwritten by the OpenWeatherMap `timezone` field. Default is 0 in
   `settings.h`, personal value via `GMT_OFFSET_SEC` in `.env`. Weather

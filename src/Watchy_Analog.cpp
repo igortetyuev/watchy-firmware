@@ -208,7 +208,7 @@ void Watchy7SEG::drawAnalogFace(uint8_t style) {
   }
 
   // date under the center, drawn before the hands
-  display.setFont(&Cyrillic9pt7b);
+  display.setFont(&LANG_FONT);
   snprintf(buf, sizeof buf, "%02d.%02d.%d", currentTime.Day, currentTime.Month,
            tmYearToCalendar(currentTime.Year));
   label(100, 125, buf);

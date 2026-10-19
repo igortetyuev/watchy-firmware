@@ -2,17 +2,14 @@
 
 #define DARKMODE false
 
-// Russian day-of-week (TimeLib wday: 1=Sunday .. 7=Saturday)
-String ruDayStr(int wday) {
-  static const char *d[] = {"", "ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"};
-  return (wday >= 1 && wday <= 7) ? String(d[wday]) : String("");
+// Localized day-of-week (TimeLib wday: 1=Sunday .. 7=Saturday)
+const char *dayStr(int wday) {
+  return (wday >= 1 && wday <= 7) ? STR[S_WDAY_1 + wday - 1] : "";
 }
 
-// Russian month abbreviation (1..12)
-String ruMonthStr(int month) {
-  static const char *m[] = {"",    "ЯНВ", "ФЕВ", "МАР", "АПР", "МАЙ", "ИЮН",
-                            "ИЮЛ", "АВГ", "СЕН", "ОКТ", "НОЯ", "ДЕК"};
-  return (month >= 1 && month <= 12) ? String(m[month]) : String("");
+// Localized month abbreviation (1..12)
+const char *monthStr(int month) {
+  return (month >= 1 && month <= 12) ? STR[S_MONTH_1 + month - 1] : "";
 }
 
 const uint8_t BATTERY_SEGMENT_WIDTH = 7;
@@ -65,20 +62,20 @@ void Watchy7SEG::drawTime(){
 }
 
 void Watchy7SEG::drawDate(){
-    display.setFont(&Cyrillic9pt7b);
+    display.setFont(&LANG_FONT);
 
     int16_t  x1, y1;
     uint16_t w, h;
 
-    String dayOfWeek = ruDayStr(currentTime.Wday);
+    const char *dayOfWeek = dayStr(currentTime.Wday);
     display.getTextBounds(dayOfWeek, 5, 85, &x1, &y1, &w, &h);
     display.setCursor(85 - w, 85);
-    printlnRU(dayOfWeek.c_str());
+    printlnL(dayOfWeek);
 
-    String month = ruMonthStr(currentTime.Month);
+    const char *month = monthStr(currentTime.Month);
     display.getTextBounds(month, 60, 110, &x1, &y1, &w, &h);
     display.setCursor(85 - w, 110);
-    printlnRU(month.c_str());
+    printlnL(month);
 
     display.setFont(&DSEG7_Classic_Bold_25);
     display.setCursor(5, 120);
