@@ -104,7 +104,9 @@ off. Build-time only; there is no menu item for it.
 MENU increments (hold 2 s for fast repeat), BACK saves. When it rings, one
 right button snoozes for 10 minutes, both right buttons together turn it off.
 If the watch misses the exact minute (the RTC wake can be late) it still rings
-on the first wake within the next 5 minutes.
+on the first wake within the next 5 minutes. An unanswered alarm stops by
+itself after `ALARM_RING_MIN` minutes (default 5, settable in `.env`) to save
+the battery; after each snooze the same limit applies to the next ring.
 
 ## Hardware notes
 

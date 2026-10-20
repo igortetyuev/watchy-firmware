@@ -85,7 +85,9 @@ pio device monitor -b 115200                                   # or pyserial, ~1
   (RTC_DATA), reset when the window passes or on settings save. `snoozeAt`
   lives only in RTC_DATA (reset on reboot and on save). `ringAlarm` is a
   blocking loop — motor 1 s on/1 s off, right button = snooze
-  `ALARM_SNOOZE_MIN`, both right = off, cap `ALARM_RING_MAX_MS`.
+  `ALARM_SNOOZE_MIN`, both right = off, cap `ALARM_RING_MIN` minutes
+  (default 5, `.env`-configurable via `load_env.py`; `ALARM_RING_MAX_MS`
+  derives from it) — the countdown restarts after each snooze.
   In `setAlarm` MENU auto‑repeat counts steps by elapsed time
   (`ALARM_REPEAT_DELAY_MS`/`ALARM_REPEAT_MS`), not per loop iteration, because
   a partial refresh (~300–500 ms) is slower than the 200 ms repeat period.
