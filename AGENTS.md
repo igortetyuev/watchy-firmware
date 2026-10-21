@@ -88,6 +88,10 @@ pio device monitor -b 115200                                   # or pyserial, ~1
   `ALARM_SNOOZE_MIN`, both right = off, cap `ALARM_RING_MIN` minutes
   (default 5, `.env`-configurable via `load_env.py`; `ALARM_RING_MAX_MS`
   derives from it) — the countdown restarts after each snooze.
+  Dismiss/snooze is decided only on **release**: press one right button,
+  then the second while still holding the first = off. The released state
+  must persist `ALARM_BTN_RELEASE_MS` (50 ms) — without that debounce the
+  press bounce ends the wait in ~10 ms and everything snoozes.
   In `setAlarm` MENU auto‑repeat counts steps by elapsed time
   (`ALARM_REPEAT_DELAY_MS`/`ALARM_REPEAT_MS`), not per loop iteration, because
   a partial refresh (~300–500 ms) is slower than the 200 ms repeat period.
