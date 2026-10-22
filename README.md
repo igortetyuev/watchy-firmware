@@ -129,6 +129,11 @@ window `NIGHT_WAKE_MIN` minutes), so the e-paper is not worn out by every
 movement. This only affects the screen: the weather/NTP wireless schedule
 is not advanced and the flick itself brings no radios up.
 
+**Battery:** each accelerometer interrupt is a full CPU wake (~1.5 s boot
+cycle), and the BMA423 level interrupt can keep firing while the watch
+rests tilted — measured dozens of wakes per minute in the worst case. Keep
+`WRIST_REFRESH=0` unless you accept the extra power draw.
+
 ## Alarm
 
 *Alarm* in the menu: UP/DOWN move focus between hours, minutes and *Enabled*;

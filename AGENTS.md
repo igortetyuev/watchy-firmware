@@ -114,6 +114,10 @@ pio device monitor -b 115200                                   # or pyserial, ~1
   mandatory — INT1 is level‑triggered and would re‑wake instantly; the step
   interrupt is remapped to INT2 so walking doesn't wake the CPU. Flick
   draws with `screenOnlyRefresh` → cached weather, no radios.
+  **Power:** every ACC wake is a full ~1.5 s boot; the level-triggered
+  INT1 can fire continuously while the watch rests tilted (observed a
+  wake every ~1.5 s for minutes) → measurable battery drain. Disabled in
+  the personal `.env` for that reason — enable only knowingly.
 - **`*_MASK` macros must be parenthesized.** Symptom: a new `if ((wake &
   ACC_INT_MASK) && !(wake & BTN_PIN_MASK))` never fired — the watch went to
   `handleButtonPress()` on every accelerometer wake, and the `FLICK` format
