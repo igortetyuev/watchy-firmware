@@ -5,7 +5,11 @@ Import("env")
 
 STRING_KEYS = {"WIFI_SSID", "WIFI_PASSWD", "OPENWEATHERMAP_APIKEY",
                "CITY_ID", "TEMP_LANG", "TEMP_UNIT"}
-INT_KEYS = {"GMT_OFFSET_SEC", "VIBRATE_OCLOCK", "ALARM_RING_MIN"}
+INT_KEYS = {"GMT_OFFSET_SEC", "VIBRATE_OCLOCK", "ALARM_RING_MIN",
+            "NIGHT_WAKE_MIN", "NIGHT_NO_WIRELESS", "WRIST_REFRESH",
+            "WRIST_REFRESH_MIN_S"}
+# "HH:MM" (or plain minutes) -> minutes-of-day macro
+TIME_KEYS = {"NIGHT_START": "NIGHT_START_MIN", "NIGHT_END": "NIGHT_END_MIN"}
 
 path = os.path.join(env.subst("$PROJECT_DIR"), ".env")
 if os.path.isfile(path):
@@ -19,6 +23,11 @@ if os.path.isfile(path):
                 value = value[1:-1]
             if key in STRING_KEYS:
                 env.Append(CPPDEFINES=[(key, env.StringifyMacro(value))])
+            elif key in TIME_KEYS:
+                if ":" in value:
+                    h, m = value.split(":", 1)
+                    value = int(h) * 60 + int(m)
+                env.Append(CPPDEFINES=[(TIME_KEYS[key], int(value))])
             elif key in INT_KEYS:
                 env.Append(CPPDEFINES=[(key, int(value))])
 else:

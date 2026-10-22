@@ -95,6 +95,35 @@ pio device monitor -b 115200                                   # or pyserial, ~1
   In `setAlarm` MENU auto‑repeat counts steps by elapsed time
   (`ALARM_REPEAT_DELAY_MS`/`ALARM_REPEAT_MS`), not per loop iteration, because
   a partial refresh (~300–500 ms) is slower than the 200 ms repeat period.
+- **Night mode** (`NIGHT_START_MIN`/`NIGHT_END_MIN`/`NIGHT_WAKE_MIN` in
+  `config.h`; `.env` keys `NIGHT_START`/`NIGHT_END` as `HH:MM` and
+  `NIGHT_WAKE_MIN` int): inside the window `deepSleep()` arms the RTC alarm N
+  minutes ahead instead of 1. The PCF8563/DS3231 alarm matches **minutes
+  only** → interval capped at 60; DS3231 switches between
+  `ALM2_EVERY_MINUTE`/`ALM2_MATCH_MINUTES` in `RTC.clearAlarm(intervalMin)`
+  (default 1). A pending alarm/snooze shortens the sleep so it lands inside
+  `ALARM_LATE_MIN`. `deepSleep()` re‑reads `currentTime` first — time spent
+  in menus would make the overshoot math stale. `SLEEP next wake in N min`
+  is printed on every sleep. `NIGHT_NO_WIRELESS=1` additionally makes
+  `getWeatherData()` skip the Wi‑Fi fetch at night (cached weather or
+  internal sensor, counter untouched); manual menu Wi‑Fi still works.
+- **Wrist flick** (`WRIST_REFRESH` int, `.env`): adds `ACC_INT_MASK` to the
+  ext1 mask — BMA423 tilt/double‑tap wakes like a button. Redraw only when
+  `guiState == WATCHFACE_STATE` and last `showWatchFace` ≥ 60 s ago
+  (`NIGHT_WAKE_MIN` at night). `sensor.getINT()` in `deepSleep` is
+  mandatory — INT1 is level‑triggered and would re‑wake instantly; the step
+  interrupt is remapped to INT2 so walking doesn't wake the CPU. Flick
+  draws with `screenOnlyRefresh` → cached weather, no radios.
+- **`*_MASK` macros must be parenthesized.** Symptom: a new `if ((wake &
+  ACC_INT_MASK) && !(wake & BTN_PIN_MASK))` never fired — the watch went to
+  `handleButtonPress()` on every accelerometer wake, and the `FLICK` format
+  string was absent even from `Watchy.cpp.o`. Cause: `BTN_PIN_MASK` was
+  defined as a bare `A|B|C|D` chain, and `&` binds tighter than `|`, so
+  `!(w & BTN_PIN_MASK)` meant `!((w & A) | B | C | D)` — a nonzero constant,
+  always false; gcc deleted the whole branch at `-Os`. Rule: every mask
+  macro that is an expression gets outer parens (done for `BTN_PIN_MASK`),
+  or parenthesize at the `&` use site. Check `strings *.o` for your format
+  literals when a log line is "impossibly" missing.
 - **App screens (button loops):** `pinMode(..., INPUT)` all four, then **wait for
   the opening MENU press to be released** before polling, otherwise it is read
   again as "select/save" on the first iteration. Pattern: `setTimezone`,

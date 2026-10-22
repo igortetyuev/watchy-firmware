@@ -33,6 +33,12 @@ CITY_ID=5128581
 TEMP_UNIT=metric
 TEMP_LANG=en
 VIBRATE_OCLOCK=1
+ALARM_RING_MIN=5
+NIGHT_START=00:00
+NIGHT_END=06:00
+NIGHT_WAKE_MIN=30
+NIGHT_NO_WIRELESS=0
+WRIST_REFRESH=0
 ```
 
 ### UI language (`LANG`)
@@ -97,6 +103,31 @@ temperature sensor instead. `CITY_ID` is an OpenWeatherMap city id,
 
 `1` (default) makes the watch buzz briefly at every full hour, `0` turns it
 off. Build-time only; there is no menu item for it.
+
+### Night mode (`NIGHT_START`, `NIGHT_END`, `NIGHT_WAKE_MIN`, `NIGHT_NO_WIRELESS`)
+
+Inside `NIGHT_START`..`NIGHT_END` (local time, `HH:MM` — plain minutes of
+day also work) the watch wakes only every `NIGHT_WAKE_MIN` minutes instead
+of every minute, saving battery and e-paper refreshes; the face keeps
+showing the last drawn time between wakes. `start == end` disables it,
+`start > end` wraps midnight (e.g. `22:00`-`06:00`). `NIGHT_WAKE_MIN` is
+1..60 (the RTC alarm matches minutes only). A set alarm still rings on
+time inside the window — the sleep is shortened to land on it.
+
+`NIGHT_NO_WIRELESS=1` additionally keeps the radios off at night: the
+automatic weather/NTP Wi-Fi fetch is skipped inside the window (the face
+shows the last fetched weather, or the internal sensor if nothing was
+fetched yet; the regular schedule resumes in the morning). Manual menu
+actions — NTP sync, Wi-Fi AP setup — still work.
+
+### Wrist flick refresh (`WRIST_REFRESH`)
+
+`WRIST_REFRESH=1` lets a wrist flick (accelerometer tilt/double-tap) wake
+the watch and redraw the face — raise-to-wake style. The refresh happens
+only if the previous screen update was at least 60 s ago (inside the night
+window `NIGHT_WAKE_MIN` minutes), so the e-paper is not worn out by every
+movement. This only affects the screen: the weather/NTP wireless schedule
+is not advanced and the flick itself brings no radios up.
 
 ## Alarm
 
